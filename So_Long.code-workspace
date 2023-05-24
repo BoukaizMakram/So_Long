@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"so_long.h": "c",
+			"stdio.h": "c",
+			"get_next_line.h": "c",
+			"unistd.h": "c",
+			"stdlib.h": "c"
+		}
+	}
+}

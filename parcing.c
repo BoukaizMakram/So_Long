@@ -6,7 +6,7 @@
 /*   By: mboukaiz <mboukaiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 02:23:00 by mboukaiz          #+#    #+#             */
-/*   Updated: 2023/05/15 02:49:47 by mboukaiz         ###   ########.fr       */
+/*   Updated: 2023/05/24 03:07:31 by mboukaiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,22 @@
 
 void	check_entities(t_data *data, int x, int y)
 {
-	if (data->map[x][y] != 'C' && data->map[x][y] != 'P'
+	if ((data->map[x][y] != 'C' && data->map[x][y] != 'P'
 		&& data->map[x][y] != 'E' && data->map[x][y] != '1'
-		&& data->map[x][y] != '0')
+		&& data->map[x][y] != '0'))
 	{
-		error("Map entities are not valid!", data);
+		ft_free("Map entities are not valid!", data);
 	}
 	if (data->map[x][y] == 'C')
-		data->C_count++;
+		data->c_count++;
 	if (data->map[x][y] == 'P')
-		data->P_count++;
+	{
+		data->x_cord = x;
+		data->y_cord = y;
+		data->p_count++;
+	}
 	if (data->map[x][y] == 'E')
-		data->E_count++;
+		data->e_count++;
 	return ;
 }
 
@@ -45,15 +49,17 @@ void	valid_table(t_data *data)
 				|| y == (data->nchars - 1))
 			{
 				if (data->map[x][y] != '1')
-					error("Wall error", data);
+					ft_free("Wall error", data);
 			}
 			check_entities(data, x, y);
 			y++;
 		}
 		x++;
 	}
-	if (data->C_count <= 0 || data->P_count != 1 || data->E_count != 1)
-		error ("Entites are invalid!", data);
+	if (data->c_count <= 0 || data->p_count != 1 || data->e_count != 1)
+		ft_free("Entites are invalid!", data);
+	if (!back_track(data))
+		ft_free("Map is impossible to win!", data);
 }
 
 void	fill_table(char *map, t_data *data)
@@ -68,7 +74,7 @@ void	fill_table(char *map, t_data *data)
 		data->map[i++] = get_next_line(fd);
 	}
 	data->map[i] = NULL;
-	
+	data->coins = 0;
 	valid_table(data);
 }
 
@@ -86,7 +92,7 @@ void	allocate(char *map, t_data *data)
 		if (i == 0)
 			ncheck = data->nchars;
 		else if (ncheck != data->nchars)
-			error("Bad Map!", data);
+			ft_free("Bad Map!", data);
 		data->map[i++] = malloc(sizeof(char) * data->nchars);
 	}
 	close(fd);
