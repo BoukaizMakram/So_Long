@@ -1,17 +1,26 @@
 #include "so_long.h"
 
-void	print_map(t_data *data)
+void	ft_putchar(char c)
 {
-	int i = 0;
-	while(i < data->nlines)
-	{
-		printf("%s\n", data->map[i]);
-		i++;
-	}
-	printf("-------\n");
+	write (1, &c, 1);
 }
 
-void	Update(t_data *data, int x, int y)
+void	ft_putnbr(int nb)
+{
+	if (nb < 0)
+	{
+		nb = -nb;
+	}
+	if (nb >= 10)
+	{
+		ft_putnbr(nb / 10);
+		ft_putnbr(nb % 10);
+	}
+	else
+		ft_putchar(nb + '0');
+}
+
+void	Update(t_data *data, int x, int y, char *direction)
 {
 	if (data->map[x][y] != '1' && data->map[x][y] != 'E')
 	{
@@ -21,15 +30,17 @@ void	Update(t_data *data, int x, int y)
 		data->map[data->x_cord][data->y_cord] = '0';
 		data->x_cord = x;
 		data->y_cord = y;
-		print_map(data);
-		draw(data);
+		ft_putnbr(++data->nom);
+		ft_putstr("\n");
 	}
 	else if (data->map[x][y] == 'E' && data->c_count == 0)
 	{
 		data->map[x][y] = 'P';
 		data->map[data->x_cord][data->y_cord] = '0';
-		ft_free("YOU WON", data);
+		ft_putnbr(++data->nom);
+		ft_free("\nYOU WON", data);
 	}
+	draw(direction, data);
 }
 
 void	move(t_data *data, char *direction)
@@ -52,10 +63,10 @@ void	move(t_data *data, char *direction)
 		x = data->x_cord;
 		y = data->y_cord - 1;
 	}
-	else if (*direction == 'R')
+	else
 	{
 		x = data->x_cord;
 		y = data->y_cord + 1;
 	}
-	Update(data, x, y);
+	Update(data, x, y, direction);
 }

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   mlx.c                                              :+:      :+:    :+:   */
+/*   so_long.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mboukaiz <mboukaiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 23:02:57 by mboukaiz          #+#    #+#             */
-/*   Updated: 2023/05/24 04:17:45 by mboukaiz         ###   ########.fr       */
+/*   Updated: 2023/05/26 00:13:20 by mboukaiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	ft_free(char *message, t_data *data)
 	int	i;
 
 	i = 0;
-	while (i < data->nlines)
+	while (i <= data->nlines)
 	{
 		free(data->map[i]);
 		i++;
@@ -58,19 +58,28 @@ void	initialize(t_data *data)
 	data->mlx = mlx_init();
 	data->win = mlx_new_window(data->mlx, data->nchars * 64, data->nlines* 64, "GAME");
 	mlx_key_hook(data->win, key_pressed, (void *)data);
-	data->sprite_0 = mlx_xpm_file_to_image(data->mlx, "image0.xpm", &height, &height);
-	data->sprite_1 = mlx_xpm_file_to_image(data->mlx, "image1.xpm", &height, &height);
-	data->sprite_C = mlx_xpm_file_to_image(data->mlx, "imageC.xpm", &height, &height);
-	data->sprite_P = mlx_xpm_file_to_image(data->mlx, "imageP.xpm", &height, &height);
-	data->sprite_E = mlx_xpm_file_to_image(data->mlx, "imageE.xpm", &height, &height);
+	data->sprite_0 = mlx_xpm_file_to_image(data->mlx, "Assets/sprite_0.xpm", &height, &height);
+	data->sprite_1 = mlx_xpm_file_to_image(data->mlx, "Assets/sprite_1.xpm", &height, &height);
+	data->sprite_C = mlx_xpm_file_to_image(data->mlx, "Assets/sprite_c.xpm", &height, &height);
+	data->sprite_E = mlx_xpm_file_to_image(data->mlx, "Assets/sprite_e.xpm", &height, &height);
+	data->sprite_p_s = mlx_xpm_file_to_image(data->mlx, "Assets/sprite_p_s.xpm", &height, &height);
+	data->sprite_p_w = mlx_xpm_file_to_image(data->mlx, "Assets/sprite_p_w.xpm", &height, &height);
+	data->sprite_p_d = mlx_xpm_file_to_image(data->mlx, "Assets/sprite_p_d.xpm", &height, &height);
+	data->sprite_p_a = mlx_xpm_file_to_image(data->mlx, "Assets/sprite_p_a.xpm", &height, &height);
+	data->sprite_e_open = mlx_xpm_file_to_image(data->mlx, "Assets/sprite_e_open.xpm", &height, &height);
+}
+
+void	fun()
+{
+	system("leaks a.out");
 }
 
 int	main(int ac, char **av)
 {
+	// atexit(fun);
 	t_data	data;
 	int		i;
 	char	*check;
-	int		width = 64;
 
 	check = ".ber";
 	if (ac != 2)
@@ -89,10 +98,9 @@ int	main(int ac, char **av)
 		if (i == 4)
 		{
 			parce(av[1], &data);
-			i = 0;
-			ft_putstr("Map is good\n");
 			initialize(&data);
-			draw(&data);
+			ft_putstr("Map is good\n");
+			draw("Down", &data);
 			mlx_loop(data.mlx);
 		}
 		else
@@ -101,6 +109,6 @@ int	main(int ac, char **av)
 			return (1);
 		}
 	}
-	
+	free(data.map);
 	return (0);
 }

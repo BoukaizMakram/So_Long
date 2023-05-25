@@ -6,7 +6,7 @@
 /*   By: mboukaiz <mboukaiz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/14 02:23:00 by mboukaiz          #+#    #+#             */
-/*   Updated: 2023/05/24 03:07:31 by mboukaiz         ###   ########.fr       */
+/*   Updated: 2023/05/26 00:30:49 by mboukaiz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void	valid_table(t_data *data)
 {
 	int	x;
 	int	y;
-	int	ascii;
 
 	x = 0;
 	while (data->map[x])
@@ -71,29 +70,36 @@ void	fill_table(char *map, t_data *data)
 	fd = open(map, O_RDONLY);
 	while (i < (data->nlines))
 	{
+		
 		data->map[i++] = get_next_line(fd);
 	}
 	data->map[i] = NULL;
 	data->coins = 0;
+	close(fd);
+	i = 0;
 	valid_table(data);
 }
 
 void	allocate(char *map, t_data *data)
 {
-	int	i;
-	int	ncheck;
-	int	fd;
+	int		i;
+	int		ncheck;
+	int		fd;
+	char 	*str;
 
 	i = 0;
 	fd = open(map, O_RDONLY);
 	while (i < (data->nlines))
 	{
-		data->nchars = ft_strlen(get_next_line(fd));
+		str = get_next_line(fd);
+		
+		data->nchars = ft_strlen(str);
 		if (i == 0)
 			ncheck = data->nchars;
 		else if (ncheck != data->nchars)
 			ft_free("Bad Map!", data);
 		data->map[i++] = malloc(sizeof(char) * data->nchars);
+		free(str);
 	}
 	close(fd);
 	fill_table(map, data);
@@ -101,15 +107,25 @@ void	allocate(char *map, t_data *data)
 
 void	parce(char *map, t_data *data)
 {
-	int	fd;
-	int	i;
+	int		fd;
+	int		i;
+	char	*str;
 
+	data->nlines = 0;
+	data->p_count = 0;
+	data->e_count = 0;
+	data->c_count = 0;
+	data->nom = 0;
 	i = 0;
 	fd = open(map, O_RDONLY);
-	while (get_next_line(fd))
+	str = get_next_line(fd);
+	while (str)
 	{
+		free(str);
+		str = get_next_line(fd);
 		data->nlines++;
 	}
+	free(str);
 	data->map = malloc(sizeof(char *) * ((data->nlines) + 1));
 	close(fd);
 	allocate(map, data);
